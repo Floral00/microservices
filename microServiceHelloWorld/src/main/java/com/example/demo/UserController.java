@@ -32,6 +32,16 @@ public class UserController {
         return users.get(id);
     }
 
+    @DeleteMapping("/users/{id}")
+    public String delete_user(@PathVariable(value = "id") Long id) {
+        String result = "Aucun élement supprimé";
+        if (users.containsKey(id)) {
+            users.remove(id);
+            result = String.format("L'utilisateur %s a été supprimé!", id.toString());
+        }
+
+        return result;
+    }
     //@DeleteMapping
     //@putMapping
 }
