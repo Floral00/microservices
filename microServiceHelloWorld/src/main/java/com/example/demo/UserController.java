@@ -29,6 +29,9 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public User specific_user(@PathVariable(value = "id") Long id) {
+        if(!users.containsKey(id)) {
+            throw new UserNotFoundException(id);
+        }
         return users.get(id);
     }
 
