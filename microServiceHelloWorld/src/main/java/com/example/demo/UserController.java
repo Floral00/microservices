@@ -2,6 +2,7 @@ package com.example.demo;
 
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public User create_user(@RequestBody User user) {
+    public User create_user(@RequestBody @Valid User user) {
         long new_id = counter.incrementAndGet();
         user.setId(new_id);
         users.put(new_id, user);

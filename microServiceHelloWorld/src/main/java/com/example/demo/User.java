@@ -1,8 +1,14 @@
 package com.example.demo;
 
+
+import javax.validation.constraints.NotNull;
+
 public class User {
     private long id;
+
+    @NotNull(message = "Provide a name")
     private String name;
+
     private String surname;
     private String address;
 
