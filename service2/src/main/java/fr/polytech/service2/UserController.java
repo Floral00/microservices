@@ -56,15 +56,33 @@ public class UserController {
     }
 
     @PostMapping("/users/{id}/name")
-    public User edit_user_name(@PathVariable(value = "id") Long id, @RequestBody @Valid String name, String token) {
+    public String edit_user_name(@PathVariable(value = "id") Long id, @RequestBody @Valid String name, String token) {
         if(!users.containsKey(id)) {
             throw new UserNotFoundException(id);
         }
         else {
+            if(users.get(id).getToken() == token) {
+                User user = new User(id, users.get(id).getName(), users.get(id).getPassword(), users.get(id).getToken());
+                user.setName(name);
+                users.remove(id);
+                users.put(id, user);
+            }
         }
-        return users.get(id);
-
+        return name.name;
+        //return users.get(id).getName();
     }
 
+    @PostMapping("/users/{id}/password")
+    public String edit_user_password(@PathVariable(value = "id") Long id, @RequestBody @Valid String password, String token) {
+        if(!users.containsKey(id)) {
+            throw new UserNotFoundException(id);
+        }
+        else {
+            if(users.get(id).getToken() == token) {
+                users.get(id).setPassword(password);
+            }
+        }
+        return users.get(id).getPassword();
+    }
 
 }
