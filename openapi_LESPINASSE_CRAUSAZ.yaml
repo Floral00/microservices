@@ -1,0 +1,105 @@
+openapi: 3.0.1
+info:
+  title: API MicroService LESP-CRAUS
+  description: Description des méthodes du webService développés par Nicolas CRAUSAZ et Florent LESPINASSE
+  contact: 
+    email: florent.lespinasse7@etu.univ-lorraine.fr
+  version: 0.1.9
+servers:
+  - url: http://localhost:8080
+    description: URL local
+paths:
+  /users:
+    get:
+      tags:
+      - user
+      summary: Retourne la liste de tous les utilisateurs
+      description: Retourne la liste de tous les utilisateurs
+      responses:
+        '200':    # status code
+          description: Une liste d'utilisateur
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#/components/schemas/User'
+    post:
+      tags:
+      - user
+      summary: Crée un utilisateur
+      requestBody:
+        description: L'ID de l'utilisateur ne doit pas être renseigné
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses: 
+        '405':
+          description: "erreur"
+          content: {}
+  /user/{userId}:
+    get:
+      tags:
+      - user
+      summary: Trouver un utilisateur via son identifiant
+      description: retourne un simple utilisateur
+      parameters: 
+      - name: userId
+        in: path
+        description: ID de l'utilisateur
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: Opération réussie
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: Utilisateur non trouvé
+          content: {}
+    delete:
+      tags:
+        - user
+      summary: Supprimer un utilisateur
+      parameters:
+        - name: userId
+          in: path
+          description: ID de l'utilisateur à supprimer
+          required: true
+          schema: 
+            type: integer
+            format: int64
+      responses:
+        404:
+          description: Utilisateur non trouvé
+          content: {}
+components:
+  schemas:
+    User:
+      type: object
+      properties: 
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        surname: 
+          type: string
+        address:
+          type: string
+      required:
+        - name
+        - surname
+        - address
+      example:
+        id: 5
+        name: "Clode"
+        surname: "Godus"
+        address: "Polymeme"
+        

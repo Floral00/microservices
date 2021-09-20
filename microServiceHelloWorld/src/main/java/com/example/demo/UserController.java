@@ -34,6 +34,7 @@ public class UserController {
             throw new UserNotFoundException(id);
         }
         return users.get(id);
+
     }
 
     @DeleteMapping("/users/{id}")
@@ -46,6 +47,8 @@ public class UserController {
 
         return result;
     }
-    //@DeleteMapping
+
+
+
     //@putMapping
 }
