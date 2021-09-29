@@ -4,17 +4,15 @@ public class User {
     private long id;
     private String name;
     private String password;
-    private String token;
 
     public long getId() {
         return id;
     }
 
-    public User(long id, String name, String password, String token) {
+    public User(long id, String name, String password) {
         this.id = id;
         this.name = name;
         this.password = password;
-        this.token = token;
     }
 
     public void setId(long id) {
@@ -37,11 +35,4 @@ public class User {
         this.password = password;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 }

@@ -3,14 +3,16 @@ package fr.polytech.service2;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+
+
 @RestController
 public class UserController {
     private final Map<Long, User> users = new HashMap<>();
     private final AtomicLong counter = new AtomicLong();
+    private final Map<Long, Token> token = new HashMap<>();
+
 
     @GetMapping("/users")
     public Collection<User> users() {
@@ -22,7 +24,7 @@ public class UserController {
         long new_id = counter.incrementAndGet();
         user.setId(new_id);
         users.put(new_id, user);
-
+        Token.
         return user;
     }
 
@@ -62,7 +64,7 @@ public class UserController {
         }
         else {
             if(users.get(id).getToken() == token) {
-                User user = new User(id, users.get(id).getName(), users.get(id).getPassword(), users.get(id).getToken());
+                User user = new User(id, users.get(id).getName(), users.get(id).getPassword());
                 user.setName(name);
                 users.remove(id);
                 users.put(id, user);
