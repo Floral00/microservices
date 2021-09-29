@@ -59,7 +59,7 @@ public class APIController {
     public String delete_user(@PathVariable(value = "id") Long id, @RequestHeader(value="X-Token") String token) {
         String result = "Aucun élement supprimé";
         if (users.containsKey(id)) {
-            if(tokens.get(id).equals(token)) {
+            if(tokens.get(id).getToken().equals(token)) {
                 users.remove(id);
                 tokens.remove(id);
                 result = String.format("L'utilisateur %s a été supprimé!", id.toString());
@@ -76,12 +76,40 @@ public class APIController {
         String result = "Aucun token supprimé";
         if(users.containsKey(id)) {
             if(tokens.containsKey(id)) {
-                
+                if(tokens.get(id).getToken().equals(token)) {
+                    tokens.remove(id);
+                    result = String.format("tokens " + token + " pour l'utilisateur "+ id.toString() + " supprimé");
+                }
             }
         }
         else {
             throw new UserNotFoundException(id);
         }
+        return result;
+    }
+
+    @GetMapping("/token")
+    public String verif_token(@RequestHeader(value="X_Token") String token){
+        String result = "";
+        for(Map.Entry<Long, Token> tokens_index: tokens.entrySet()) {
+            Token token_now = tokens_index.getValue();
+            Long key = tokens_index.getKey();
+            Date now = new Date();
+            if(token_now.getToken().equals(token)) {
+                if (Math.abs(now.getTime() - token_now.getDate_creation().getTime()) < 5) {
+                    //Valid
+                    result = token;
+                } else {
+                    //Invalid
+                    tokens.remove(key);
+                    Long token_id = counterToken.incrementAndGet();
+                    Token new_token = new Token(token_id, token_now.getUserId());
+                    tokens.put(key, new_token);
+                    result = new_token.getToken();
+                }
+            }
+        }
+        return result;
     }
 
     @PostMapping("/users/{id}/name")
@@ -92,8 +120,8 @@ public class APIController {
         }
         else {
             result = "Le token ne correspond pas";
-            if(users.get(id).getToken().equals(token)) {
-                User user = new User(id, body.name, users.get(id).getPassword(), users.get(id).getToken());
+            if(tokens.get(id).getToken().equals(token)) {
+                User user = new User(id, body.name, users.get(id).getPassword());
                 users.remove(id);
                 users.put(id, user);
                 result = users.get(id).toString();
@@ -108,7 +136,7 @@ public class APIController {
             throw new UserNotFoundException(id);
         }
         else {
-            if(users.get(id).getToken() == token) {
+            if(tokens.get(id).getToken().equals(token)) {
                 users.get(id).setPassword(password);
             }
         }
