@@ -113,7 +113,7 @@ public class APIController {
     }
 
     @PostMapping("/users/{id}/name")
-    public String edit_user_name(@PathVariable(value = "id") Long id, @RequestBody @Valid UserChangeName body, @RequestHeader(value="X-Token") String token) {
+    public String edit_user_name(@PathVariable(value = "id") Long id, @RequestBody @Valid String name, @RequestHeader(value="X-Token") String token) {
         String result = "";
         if(!users.containsKey(id)) {
             throw new UserNotFoundException(id);
@@ -121,9 +121,7 @@ public class APIController {
         else {
             result = "Le token ne correspond pas";
             if(tokens.get(id).getToken().equals(token)) {
-                User user = new User(id, body.name, users.get(id).getPassword());
-                users.remove(id);
-                users.put(id, user);
+                users.get(id).setName(name);
                 result = users.get(id).toString();
             }
         }
@@ -132,15 +130,18 @@ public class APIController {
 
     @PostMapping("/users/{id}/password")
     public String edit_user_password(@PathVariable(value = "id") Long id, @RequestBody @Valid String password, String token) {
+        String result = "";
         if(!users.containsKey(id)) {
             throw new UserNotFoundException(id);
         }
         else {
+            result = "Le token ne correspond pas";
             if(tokens.get(id).getToken().equals(token)) {
                 users.get(id).setPassword(password);
+                result = users.get(id).getPassword();
             }
         }
-        return users.get(id).getPassword();
+        return result;
     }
 
 }
